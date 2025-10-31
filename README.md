@@ -1,171 +1,115 @@
-# Sealed Bid Auction with FHEVM - README
-This project implements a Confidential Sealed-Bid Auction using the Fully Homomorphic Encryption Virtual Machine (FHEVM). It allows users to place encrypted bids on an auction item, ensuring privacy until the auction ends. The admin manages the auction lifecycle, and bids are decrypted only when necessary, leveraging FHE for secure computation.
-# Table of Contents
+Confidential Survey with FHEVM - README
 
-Overview
-Features
-Prerequisites
-Setup Instructions
-Usage
-Smart Contract Details
-Frontend Details
-Troubleshooting
+This project implements a Confidential Survey System using the Fully Homomorphic Encryption Virtual Machine (FHEVM). It allows users to submit encrypted restaurant ratings (quality, price, ambiance) while preserving privacy. The survey owner manages survey creation and result aggregation, and decryption is performed only when revealing the final averages.
 
-# Overview
-The SealedBidAuction smart contract is deployed on a blockchain network supporting FHEVM (e.g., Zama's Sepolia testnet). It enables a first-price sealed-bid auction where:
+📘 Overview
 
-Bids are encrypted using FHE to ensure confidentiality.
-Users deposit a public amount that must cover their encrypted bid.
-The admin starts and ends the auction, requests decryption of the highest bid, and withdraws proceeds.
-Losers receive full refunds, while the winner's deposit is refunded minus their bid amount.
+The ConfidentialSurvey smart contract is deployed on an FHEVM-compatible blockchain (e.g., Zama Sepolia testnet). It enables privacy-preserving surveys where:
 
-The frontend, built with React and TypeScript, integrates with MetaMask and ethers.js to interact with the smart contract.
+Ratings are encrypted with FHE, keeping individual feedback confidential.
 
-# Features
+The contract aggregates encrypted data without decryption.
 
-Encrypted Bidding: Bids are encrypted using FHE, ensuring privacy during the auction.
-Admin Controls: The admin can start, end, and reset auctions, set auction items, and withdraw proceeds.
-User Actions: Users can place bids with deposits, request refunds, and view auction status.
-Event-Driven Updates: Real-time updates via contract events (e.g., AuctionStarted, AuctionWinnerAnnounced).
-Responsive UI: A clean React-based interface for interacting with the auction.
+The survey owner can later decrypt aggregated results to view average scores securely.
 
-# Prerequisites
+A React + TypeScript frontend integrates with MetaMask and ethers.js for seamless user interaction.
 
-Node.js: Version 18 or higher.
-MetaMask: Installed in your browser and connected to a supported network (e.g., Zama Sepolia).
-Yarn or npm: For managing dependencies.
-FHEVM Environment: Access to an FHEVM-compatible blockchain (e.g., Zama's Sepolia testnet).
-ETH for Gas Fees: Testnet ETH for transactions on the target network.
+🔑 Features
 
-# Setup Instructions
+Encrypted Ratings: All responses are fully encrypted using FHE.
 
-Clone the Repository:
+Owner Controls: Start, close, and decrypt survey results securely.
+
+User Actions: Submit encrypted ratings for quality, price, and ambiance.
+
+Secure Aggregation: Calculations are done on encrypted data—no raw data exposure.
+
+Clean UI: Built with React for an intuitive user experience.
+
+⚙️ Prerequisites
+
+Node.js ≥ 18
+
+MetaMask connected to Zama Sepolia
+
+Yarn/NPM for dependency management
+
+FHEVM Environment configured and accessible
+
+Testnet ETH for gas fees
+
+🚀 Setup Instructions
+
+1. Clone the repository:
+
 git clone <repository-url>
-cd sealed-bid-auction
+cd confidential-survey
 
 
-# Install Dependencies:
+2. Install dependencies:
+
 yarn install
-
-or
+# or
 npm install
 
 
-# Configure Environment:
+3. Configure environment:
+Ensure MetaMask is connected to the correct FHEVM network and update ConfidentialSurveyAddresses.ts with your deployed contract address.
 
-Ensure MetaMask is connected to the correct network (e.g., Zama Sepolia).
-Update the SealedBidAuctionAddresses.ts file with the deployed contract address for your target chain ID.
+4. Run the app:
 
-
-# Run the Application:
 yarn start
-
-or
+# or
 npm start
 
-The app will be available at http://localhost:3000.
 
-Deploy the Smart Contract (if not already deployed):
+Access at http://localhost:3000
+.
 
-Use tools like Hardhat or Remix to deploy SealedBidAuction.sol to an FHEVM-compatible network.
-Update SealedBidAuctionAddresses.ts with the deployed contract address.
+🧩 Usage
 
+For Survey Owners:
 
+Create a new survey with a restaurant name.
 
-# Usage
+View encrypted results and request decryption once enough responses are collected.
 
-Connect MetaMask:
+For Users:
 
-Click "Connect to MetaMask" to link your wallet.
-Ensure you're on the correct network (e.g., Zama Sepolia).
+Submit encrypted ratings (quality, price, ambiance).
 
+Your responses remain private, even from the survey owner.
 
-Admin Actions:
+💡 Smart Contract Details
 
-Start Auction: Set a duration (in seconds) and click "Start Auction" to begin. The first user to start an auction becomes the admin.
-Set Auction Item: Enter an item description and click "Set Auction Item".
-End Auction: Click "End Auction" to stop bidding.
-Request Decryption: After the auction ends, click "Request Decryption" to reveal the winner and highest bid.
-Reset Auction: Click "Reset Auction" to clear the auction state and start a new auction.
-Withdraw Proceeds: Click "Withdraw Proceeds" to retrieve accumulated winning bids.
+Main Functions:
 
+createSurvey(string restaurantName) – Create a new confidential survey.
 
-User Actions:
+submitEncryptedRatings(euint64 quality, euint64 price, euint64 ambiance) – Submit encrypted ratings.
 
-Place Bid: Enter a bid amount and deposit amount (in wei), then click "Place Bid". The deposit must be at least the bid amount.
-Refund: After the auction ends and the winner is announced, click "Refund" to retrieve your deposit (full refund for losers, deposit minus bid for the winner).
-
-
-View Auction State:
-
-The UI displays the auction item, start/end times, user deposit, winner, and winning amount.
-Use the "Refresh State" button to update the auction state manually.
-
-
-
-# Smart Contract Details
-The SealedBidAuction.sol contract includes:
-
-Modifiers:
-onlyAdmin: Restricts actions to the admin.
-onlyDuringAuction: Ensures bids are placed during the active auction period.
-onlyAfterAuction: Restricts actions like refunds and decryption to post-auction.
-
-
-Key Functions:
-setAuctionItem: Sets the auction item (admin only).
-startAuction: Starts the auction and sets the caller as admin.
-placeBid: Allows users to place encrypted bids with a deposit.
-endAuction: Ends the auction (admin only).
-requestDecryption: Requests decryption of the highest bid and bidder (admin only).
-refund: Refunds deposits after the winner is announced.
-resetAuction: Resets the auction state (admin only).
-withdrawTotalProceeds: Withdraws accumulated proceeds (admin only).
-
+decryptSurveyResults() – Decrypt aggregated data for average results.
 
 Events:
-AuctionStarted: Emitted when the auction starts.
-AuctionWinnerAnnounced: Emitted when the winner and amount are decrypted.
-TotalProceedsWithdrawn: Emitted when proceeds are withdrawn.
 
+SurveyCreated – New survey launched.
 
+SurveySubmitted – New response recorded.
 
-# Frontend Details
-The frontend is built with React, TypeScript, and ethers.js, using the following key files:
+SurveyDecrypted – Final results revealed.
 
-useSealedBidAuction.tsx: A custom React hook for interacting with the SealedBidAuction contract.
-SealedBidAuctionDemo.tsx: The main component rendering the auction UI.
-Dependencies:
-ethers: For Ethereum interactions.
-fhevm: For FHE encryption/decryption.
-useMetaMaskEthersSigner: Custom hook for MetaMask integration.
-useInMemoryStorage: Manages FHEVM decryption signatures.
+🖥️ Frontend Details
 
+Built with React, TypeScript, and ethers.js.
 
+Integrates fhevm for encryption/decryption.
 
-The UI includes:
+Uses hooks for MetaMask and survey state management.
 
-Chain Info: Displays chain ID, MetaMask accounts, contract address, and admin status.
-Auction State: Shows auction item, start/end times, user deposit, winner, and winning amount.
-Action Buttons: For starting/ending auctions, placing bids, requesting decryption, refunds, and withdrawing proceeds.
+🧭 Troubleshooting
 
-# Troubleshooting
+MetaMask Issues: Ensure MetaMask is unlocked and on the correct network.
 
-MetaMask Connection Issues:
-Ensure MetaMask is installed and unlocked.
-Verify the correct network is selected in MetaMask.
+FHEVM Errors: Check fhevm initialization and network compatibility.
 
-
-# Contract Not Deployed:
-Check SealedBidAuctionAddresses.ts for the correct contract address.
-Deploy the contract if it hasn't been deployed yet.
-
-
-# FHEVM Errors:
-Ensure the fhevm library is properly initialized.
-Verify the network supports FHEVM (e.g., Zama Sepolia).
-
-
-# Transaction Failures:
-Check for sufficient gas and ETH in your wallet.
-Review console logs for error messages from useSealedBidAuction.
+Transaction Failures: Ensure sufficient gas and verify contract address.
