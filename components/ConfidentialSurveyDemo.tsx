@@ -127,9 +127,12 @@ export const ConfidentialSurveyDemo = () => {
               </p>
               {!activeSurvey.submitted && (
                 <>
-                  <div className="grid grid-cols-3 gap-2 mb-2">
+                  <div className="grid grid-cols-1 gap-2 mb-2">
+                    <label>Quality:</label>
                     <input type="number" min="1" max="10" value={quality} onChange={e => setQuality(Number(e.target.value))} className="border p-1 text-center" placeholder="Chất lượng" />
+                    <label>Price:</label>
                     <input type="number" min="1" max="10" value={price} onChange={e => setPrice(Number(e.target.value))} className="border p-1 text-center" placeholder="Giá cả" />
+                    <label>Ambiance:</label>
                     <input type="number" min="1" max="10" value={ambiance} onChange={e => setAmbiance(Number(e.target.value))} className="border p-1 text-center" placeholder="Không gian" />
                   </div>
                   <button
