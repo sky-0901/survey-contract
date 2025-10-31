@@ -3,6 +3,6 @@
   Command: 'npm run genabi'
 */
 export const ConfidentialSurveyAddresses = {
-    "11155111": { address: "0x1321Fe1b19a4C960760EC9Eb239296D15B9Ca4F4", chainId: 11155111, chainName: "sepolia" },
+    "11155111": { address: "0x7b88c4741a07a3EdD25313dC36a84755B6912ffa", chainId: 11155111, chainName: "sepolia" },
   };
   
